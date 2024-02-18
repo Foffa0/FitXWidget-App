@@ -4,7 +4,7 @@ import { Stack, useRouter } from 'expo-router';
 
 import { CapacityGraphs } from "../components";
 
-import { COLORS, icons, images, SIZES } from '../constants';
+import { COLORS, FONT, icons, images, SIZES } from '../constants';
 
 const Home = () => {
     const router = useRouter();
@@ -16,6 +16,7 @@ const Home = () => {
                 options={{
                     headerStyle: { backgroundColor: COLORS.lightWhite },
                     headerTitle: "Name von Studio hier",
+                    headerTitleStyle: { fontFamily: FONT.bold, fontSize: SIZES.large }
                 }}
             />
             <View>

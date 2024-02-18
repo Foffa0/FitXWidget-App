@@ -7,11 +7,12 @@ import { View, Text } from "react-native";
 
 const data=[ {value:50}, {value:80}, {value:90}, {value:70} ]
 
-const GraphSlideCard = () => {
+const GraphSlideCard = (itemData) => {
+    console.log(itemData)
     return (
-        <View>
-            <Text>Charts</Text>
-            <LineChart data = {data} areaChart />
+        <View style={styles.container}>
+            <Text style={styles.dayText}>{itemData.itemData.day}</Text>
+            <LineChart  data = {data} areaChart style={styles.lineChart} />
         </View>
         
     )
