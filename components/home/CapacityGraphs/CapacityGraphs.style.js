@@ -4,20 +4,24 @@ import { SIZES, COLORS, FONT } from "../../../constants";
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: SIZES.medium,
+        margin: SIZES.medium,
         justifyContent: "center",
         alignContent: "center",
+        borderRadius: 20,
+        borderWidth: 9,
+        backgroundColor: COLORS.lightDark,
+        borderColor: COLORS.lightDark,
     },
     carousel: {
-        flex: 3,
-        //height: 5000,
-        aspectRatio: 1,
+        
     },
     pagination: {
-        flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: 100,
+        alignSelf: "center",
+        paddingBottom: 20,
     }
-
 });
 
 export default styles;

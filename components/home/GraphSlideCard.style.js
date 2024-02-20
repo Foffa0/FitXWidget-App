@@ -5,20 +5,25 @@ import { COLORS, FONT, SIZES } from "../../constants";
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        height: 1000,
-        padding: SIZES.medium,
+        //padding: SIZES.xSmall,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: COLORS.primary,
+        verticalAlign: "top",
     },
     dayText: {
-        fontFamily: FONT.medium,
-        fontSize: SIZES.medium,
-        //flex: 1,
+        fontFamily: FONT.regular,
+        fontSize: SIZES.large,
+        color: COLORS.lightWhite,
+        padding: SIZES.medium,
+        flex: 1,
     },
     lineChart: {
-        //flex: 1,
-        //aspectRatio: 1,
+        flex: 1,
+    },
+    axis: {
+        fontFamily: FONT.medium,
+        fontSize: SIZES.small,
+        color: COLORS.lightWhite,
     }
 });
 

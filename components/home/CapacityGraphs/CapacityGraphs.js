@@ -23,38 +23,27 @@ const CapacityGraphs = () => {
     const progressValue = useSharedValue(0);
 
     return (
-        <View /*style={styles.container}*/>
+        <View style={styles.container}>
             <Carousel
                 loop
                 data={entries}
-                width={width}
-                height={width}
-                renderItem={({ index }) => (
+                width={width-50}
+                height={width-100}
+                renderItem={({ item }) => (
                     <GraphSlideCard
-                        itemData={index}
+                        itemData={item}
                     />
                 )}
                 onSnapToItem={(index) => setActiveSlide(index)}
                 snapEnabled={true}
-                mode="parallax"
-                modeConfig={{
-                    parallaxScrollingScale: 0.9,
-                    parallaxScrollingOffset: 50,
-                }}
                 onProgressChange={(_, absoluteProgress) =>
                     (progressValue.value = absoluteProgress)
                 }
-            /*style={styles.carousel}*/
+                style={styles.carousel}
             />
             {!!progressValue && (
                 <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        width: 100,
-                        alignSelf: "center",
-                    }
-                    }
+                    style={ styles.pagination}
                 >
                     {entries.map((backgroundColor, index) => {
                         return (
@@ -71,6 +60,8 @@ const CapacityGraphs = () => {
                 </View>
             )}
         </View>
+
+    
     );
 }
 
