@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { View, ScrollView, SafeAreaView } from 'react-native';
+import { View, ScrollView, Text, SafeAreaView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 
-import { CapacityGraphs } from "../components";
+import { CapacityGraphs, ChangeStudio } from "../components";
 
 import { COLORS, FONT, icons, images, SIZES } from '../constants';
 
@@ -11,35 +11,22 @@ const Home = () => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.dark }}>
             <Stack.Screen 
                 options={{
-                    headerStyle: { backgroundColor: COLORS.lightWhite },
+                    headerStyle: { backgroundColor: COLORS.dark },
                     headerTitle: "Name von Studio hier",
-                    headerTitleStyle: { fontFamily: FONT.bold, fontSize: SIZES.large }
+                    headerTitleStyle: { fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }
                 }}
             />
             <View>
+                <Text style={{fontFamily: FONT.bold, fontSize: SIZES.medium, color: COLORS.white, paddingLeft: SIZES.large, paddingTop: SIZES.medium}}>Auslastung</Text>
                 <CapacityGraphs />
+                <ChangeStudio />
             </View>
             
         </SafeAreaView>
     );
-
-    /*return (
-        <View>
-                <Carousel
-                    data={this.state.entries}
-                    renderItem={({ item }) => (
-                        <GraphSlideCard 
-                            data={item}
-                        />
-                    )}
-                    onSnapToItem={(index) => this.setState({ activeSlide: index }) }
-                />
-                { this.pagination }
-            </View>
-    )*/
 }
 
  export default Home;
