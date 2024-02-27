@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { View, Text, Dimensions } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, Dimensions, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import GraphSlideCard from "../GraphSlideCard";
 import Animated, {
@@ -13,34 +13,40 @@ import Carousel from 'react-native-reanimated-carousel';
 import styles from "./CapacityGraphs.style"
 import { COLORS } from "../../../constants";
 
-const CapacityGraphs = () => {
+const CapacityGraphs = (data) => {
+    const [data2] = useState(data);
     const router = useRouter();
-
     const { height, width } = Dimensions.get('window');
 
-    const [entries, setEntries] = useState([{ day: "Sonntag" }, { day: "Montag" }, { day: "Dienstag" }, { day: "Mittwoch" }, { day: "Donnerstag" }, { day: "Freitag" }, { day: "Samstag" }]);
+    const [entries, setEntries] = useState([{ day: "Sonntag", weekday: 0, data: data.data[0].values }, { day: "Montag", weekday: 1, data: data.data[1].values }, { day: "Dienstag", weekday: 2, data: data.data[2].values }, { day: "Mittwoch", weekday: 3, data: data.data[3].values }, { day: "Donnerstag", weekday: 4, data: data.data[4].values }, { day: "Freitag", weekday: 5, data: data.data[5].values }, { day: "Samstag", weekday: 6, data: data.data[6].values }]);
     const [activeSlide, setActiveSlide] = useState(0); //TODO: set active slide to todays weekday
-    const progressValue = useSharedValue(0);
+    const progressValue = useSharedValue(0); 
 
     return (
         <View style={styles.container}>
-            <Carousel
-                loop
-                data={entries}
-                width={width-50}
-                height={width-100}
-                renderItem={({ item }) => (
-                    <GraphSlideCard
-                        itemData={item}
+            {!data2 ? (
+                    <ActivityIndicator size="large" color={COLORS.grayedOut} />
+                ) : (
+                    <Carousel
+                        loop
+                        data={entries}
+                        width={width-50}
+                        height={width-100}
+                        renderItem={({ item }) => (
+                            <GraphSlideCard
+                                itemData={item}
+                            />
+                        )}
+                        onSnapToItem={(index) => setActiveSlide(index)}
+                        snapEnabled={true}
+                        onProgressChange={(_, absoluteProgress) =>
+                            (progressValue.value = absoluteProgress)
+                        }
+                        style={styles.carousel}
                     />
-                )}
-                onSnapToItem={(index) => setActiveSlide(index)}
-                snapEnabled={true}
-                onProgressChange={(_, absoluteProgress) =>
-                    (progressValue.value = absoluteProgress)
-                }
-                style={styles.carousel}
-            />
+                )
+            }
+            
             {!!progressValue && (
                 <View
                     style={ styles.pagination}
