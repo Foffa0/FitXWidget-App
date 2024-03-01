@@ -12,9 +12,9 @@ const COLORS = {
 };
 
 const FONT = {
-    regular: "DMRegular",
-    medium: "DMMedium",
-    bold: "DMBold",
+    regular: "DMSans-Regular",
+    medium: "DMSans-Medium",
+    bold: 'DMSans-Bold',
 }
 
 const SIZES = {

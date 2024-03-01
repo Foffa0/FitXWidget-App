@@ -10,7 +10,6 @@ import { COLORS, FONT, icons, images, SIZES } from '../constants';
 import { WidgetPreview } from 'react-native-android-widget';
 import { registerWidgetTaskHandler } from 'react-native-android-widget';
 import { widgetTaskHandler } from '../widgets/widget-task-handler';
-import useFetch from '../hook/useFetch';
 
 import { StudioInfoWidget } from '../widgets/studioInfoWidget';
 
@@ -25,7 +24,6 @@ const Home = () => {
             setStudioName(data);
             const data2 = await AsyncStorage.getItem('fitx-id');
             setStudioId(data2); 
-            //console.log(data2)
         }
 
         getStudiofromStorage();
@@ -40,7 +38,6 @@ const Home = () => {
     const fetchData = async () => {
         setIsLoading(true);
         const params = {studioId: Number(studioId)};
-        //console.log(params)
     
         try {
             await axios.get('http://192.168.1.10:7002/api/capacity', {responseType: 'json', timeout: 5000, params: params})
@@ -58,7 +55,6 @@ const Home = () => {
     useEffect(() => {
         if(studioId != null) {
             fetchData();
-            //console.log(data)
         }
         
     }, [studioId]);
