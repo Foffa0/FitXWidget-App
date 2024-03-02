@@ -6,7 +6,6 @@ import axios from 'axios';
 import { COLORS, FONT, icons, images, SIZES } from '../../constants';
 import styles from '../../styles/search.js';
 import { StudioCard } from '../../components';
-import useFetch from '../../hook/useFetch';
 
 const Search = () => {
     const router = useRouter()

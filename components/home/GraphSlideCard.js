@@ -3,7 +3,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import styles from "./GraphSlideCard.style";
 import { LineChart } from "react-native-gifted-charts";
 import { View, Text, Dimensions, ActivityIndicator } from "react-native";
-import { COLORS } from "../../constants";
+import { COLORS, FONT } from "../../constants";
 
 const { height, width } = Dimensions.get('window');
 
@@ -28,13 +28,15 @@ const GraphSlideCard = (itemData) => {
     const [todayValues, setTodayValues] = useState([]);
     const [averageValues, setAverageValues] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const today = new Date();
+    const [pointerIndex, setPointerIndex] = useState(-1);
+    const todayTemp = new Date().toLocaleString("sv-SE", {timeZone: "Europe/Berlin"}).replaceAll(".", '-').replace(", ", "");
+    const today = new Date(todayTemp);
 
     // subtract 15, because the time in the itemData is a range and the capacity for that time is fetched in the middle of this time period
     let minutes;
     if ((today.getMinutes() - 15) < 0)
     {
-        minutes = today.getMinutes();
+        minutes = ('0' + today.getMinutes()).slice(-2);
     } else {
         minutes = today.getMinutes() - 15;
     }
@@ -45,13 +47,14 @@ const GraphSlideCard = (itemData) => {
 
         for (let i = 0; i < itemData.itemData.data.length; i++) {
             if(itemData.itemData.data[i].capacities.length === 0) {
-                if (!(`${today.getHours()}:${minutes}:00` < itemData.itemData.data[i].start ))
+                if (!(`${("0" + today.getHours()).slice(-2)}:${minutes}:00` < itemData.itemData.data[i].start ))
                 {
                     todayValuesTemp.push({value: 0})
                 }                
                 averageValuesTemplate[i].value = 0;
+                
             } else {
-                if (!(`${today.getHours()}:${minutes}:00` < itemData.itemData.data[i].start) )
+                if (!(`${("0" + today.getHours()).slice(-2)}:${minutes}:00` < itemData.itemData.data[i].start) )
                 {
                     todayValuesTemp.push({value: itemData.itemData.data[i].capacities.slice(-1)[0]});
                 } 
@@ -62,6 +65,7 @@ const GraphSlideCard = (itemData) => {
                 averageValuesTemplate[i].value = sum / itemData.itemData.data[i].capacities.length;
             }
         }
+        
         setTodayValues(todayValuesTemp);
         setAverageValues(averageValuesTemplate)
         setIsLoading(false);
@@ -95,7 +99,52 @@ const GraphSlideCard = (itemData) => {
                     height={width-200}
                     spacing={(width-110)/48}
                     noOfSections={4}
-                    style={styles.lineChart} />
+                    style={styles.lineChart}
+                    getPointerProps={(pointerIndex, pointerX, pointerY) => {
+                        if (pointerIndex.pointerIndex != -1)
+                        {
+                            setPointerIndex(pointerIndex.pointerIndex)
+                        }
+                            
+                    }}
+                    pointerConfig={{
+                        pointerStripUptoDataPoint: true,
+                        autoAdjustPointerLabelPosition: true,
+                        pointerStripColor: 'lightgray',          
+                        pointerStripWidth: 2,         
+                        strokeDashArray: [2, 5],          
+                        pointerColor: 'lightgray',         
+                        radius: 4,        
+                        pointerLabelWidth: 80,         
+                        pointerLabelHeight: 30,         
+                        pointerLabelComponent: items => {  
+                            let time = "00:00";
+                            if (pointerIndex % 2 == 0) {
+                                time = Math.floor(pointerIndex/2) + ":" + "00";
+                            } else {
+                                time = Math.floor(pointerIndex/2) + ":" + "30";
+                            }
+                             
+                          return (      
+                            <View       
+                              style={{       
+                                height: 30,     
+                                width: 80,       
+                                backgroundColor: '#282C3E',
+                                borderRadius: 4,       
+                                justifyContent:'center',      
+                                paddingLeft:8,     
+                              }}>
+           
+                              <Text style={{color: COLORS.primaryLight, fontFamily: FONT.medium, fontSize:12, justifyContent:'center',}}>{time}   <Text style={{color: 'white', fontFamily: FONT.medium, fontSize:12}}>{items[1].value + '%'}</Text></Text> 
+                                
+                            </View>
+          
+                          );
+          
+                        },
+          
+                      }} />
                 ) : (
                     <LineChart
                     data={averageValues}
