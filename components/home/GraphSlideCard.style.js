@@ -24,6 +24,24 @@ const styles = StyleSheet.create({
         fontFamily: FONT.medium,
         fontSize: SIZES.small,
         color: COLORS.lightWhite,
+    },
+    pointerLabel: {
+        color: COLORS.grayedOut, 
+        fontFamily: FONT.medium, 
+        fontSize:12, 
+        justifyContent:'center',
+    }, 
+    pointerLabelActive: {
+        color: COLORS.primaryLight, 
+        fontFamily: FONT.medium, 
+        fontSize:12, 
+        justifyContent:'center',
+    },
+    warning: {
+        color: 'red',
+        fontFamily: FONT.regular,
+        fontSize: 12,
+        position: 'absolute', top: 0, left: 10, zIndex: 1
     }
 });
 
