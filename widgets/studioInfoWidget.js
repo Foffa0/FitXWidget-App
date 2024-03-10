@@ -4,7 +4,7 @@ import { COLORS, icons } from '../constants';
 
 export function StudioInfoWidget({title, capacity}) {
   return (
-    <FlexWidget
+    <FlexWidget clickAction="OPEN_APP"
       style={{
         height: 'match_parent',
         width: 'match_parent',
@@ -39,7 +39,7 @@ export function StudioInfoWidget({title, capacity}) {
           <TextWidget
             text={capacity}
             style={{
-              fontSize: 25,
+              fontSize: 20,
               color: '#ffffff',
             }}
           />
