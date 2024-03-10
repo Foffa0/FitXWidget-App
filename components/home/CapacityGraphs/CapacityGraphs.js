@@ -19,8 +19,10 @@ const CapacityGraphs = (data) => {
     const { height, width } = Dimensions.get('window');
 
     const [entries, setEntries] = useState([{ day: "Sonntag", weekday: 0, data: data.data[0].values }, { day: "Montag", weekday: 1, data: data.data[1].values }, { day: "Dienstag", weekday: 2, data: data.data[2].values }, { day: "Mittwoch", weekday: 3, data: data.data[3].values }, { day: "Donnerstag", weekday: 4, data: data.data[4].values }, { day: "Freitag", weekday: 5, data: data.data[5].values }, { day: "Samstag", weekday: 6, data: data.data[6].values }]);
-    const [activeSlide, setActiveSlide] = useState(0); //TODO: set active slide to todays weekday
+    const [activeSlide, setActiveSlide] = useState(0);
     const progressValue = useSharedValue(0); 
+
+    const today = new Date(new Date().toLocaleString("sv-SE", {timeZone: "Europe/Berlin"}).replaceAll(".", '-').replace(", ", ""));
 
     return (
         <View style={styles.container}>
@@ -28,6 +30,7 @@ const CapacityGraphs = (data) => {
                     <ActivityIndicator size="large" color={COLORS.grayedOut} />
                 ) : (
                     <Carousel
+                        defaultIndex={today.getDay()}
                         loop
                         data={entries}
                         width={width-50}
