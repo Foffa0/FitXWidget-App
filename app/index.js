@@ -12,6 +12,53 @@ import { registerWidgetTaskHandler } from 'react-native-android-widget';
 import { widgetTaskHandler } from '../widgets/widget-task-handler';
 
 import { StudioInfoWidget } from '../widgets/studioInfoWidget';
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+import { requestWidgetUpdate } from 'react-native-android-widget';
+
+
+const BACKGROUND_FETCH_TASK = 'fitx-background-fetch';
+
+// Define the task by providing a name and the function that should be executed
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+    const id = await AsyncStorage.getItem('fitx-id');
+    const name = await AsyncStorage.getItem('fitx-name');
+    let data = [];
+    try {
+      await axios.get(`https://fitx-proxy.daniel-stefan.dev/api/utilization/${id}`, { responseType: 'json', timeout: 10000 })
+        .then(res => {
+          data = res.data;
+        });
+    } catch (error) { }
+
+    percentage = "---";
+    data.items.forEach(item => {
+        if (item.isCurrent)
+        {
+          percentage = item.percentage;
+        }
+      });
+      console.log(percentage)
+      requestWidgetUpdate({
+        widgetName: 'studioWidget',
+        renderWidget: () => <StudioInfoWidget title={name} capacity={String(percentage) + '%'} />,
+        widgetNotFound: () => {
+          // Called if no widget is present on the home screen
+        }
+      });
+
+  // Be sure to return the successful result type!
+  return BackgroundFetch.BackgroundFetchResult.NewData;
+});
+
+async function registerBackgroundFetchAsync() {
+    return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+      minimumInterval: 60 * 15, // 15 minutes
+      stopOnTerminate: false, // android only,
+      startOnBoot: true, // android only
+    });
+}
+
 
 const Home = () => {
     const router = useRouter();
@@ -34,6 +81,32 @@ const Home = () => {
         getStudiofromStorage();
     });
 
+    // Background fetch
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [status, setStatus] = useState(null);
+
+    useEffect(() => {
+        checkStatusAsync();
+        toggleFetchTask();
+    }, []);
+
+    const checkStatusAsync = async () => {
+        const status = await BackgroundFetch.getStatusAsync();
+        const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+        setStatus(status);
+        setIsRegistered(isRegistered);
+    };
+
+    const toggleFetchTask = async () => {
+        if (!isRegistered) {
+            await registerBackgroundFetchAsync();
+        }
+
+        checkStatusAsync();
+    };
+
+
+
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -54,7 +127,6 @@ const Home = () => {
         } finally {
             setIsLoading(false);
         }
-        console.log(data)
     }
 
     const rootNavigationState = useRootNavigationState();
@@ -62,13 +134,11 @@ const Home = () => {
     useEffect(() => {
         if(studioId != null) {
             fetchData();
-        } /*else {
-            setRedirectSearch(true);
-        }*/
-        
+        }
     }, [studioId]);
     
     registerWidgetTaskHandler(widgetTaskHandler);
+
 
     // Pull to refresh
     const [refreshing, setRefreshing] = useState(false);
@@ -92,7 +162,7 @@ const Home = () => {
             />
             <ScrollView
             refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} style={{color: COLORS.primary}} />
+                <RefreshControl progressBackgroundColor={COLORS.lightDark} refreshing={refreshing} onRefresh={onRefresh} colors={[COLORS.primaryLight, COLORS.primary]} tintColor={COLORS.primary} />
             }>
                 <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.medium, color: COLORS.white, paddingLeft: SIZES.large, paddingTop: SIZES.medium }}>Auslastung</Text>
                 {isLoading || (data.length === 0) ? (
