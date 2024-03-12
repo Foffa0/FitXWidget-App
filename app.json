@@ -9,8 +9,8 @@
     "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/images/logo.png",
-      "resizeMode": "center",
-      "backgroundColor": "#25292e"
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -42,6 +42,6 @@
       "eas": {
         "projectId": "43712921-1093-41e6-92cb-aa8894d70619"
       }
-    }
+    }    
   }
 }

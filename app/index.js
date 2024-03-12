@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { View, RefreshControl, Text, SafeAreaView, ActivityIndicator, ScrollView } from 'react-native';
-import { Stack, useRouter, useRootNavigationState, Redirect } from 'expo-router';
+import { Stack, useRouter, Redirect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -117,7 +117,7 @@ const Home = () => {
         const params = {studioId: Number(studioId)};
     
         try {
-            await axios.get('http://192.168.1.10:7002/api/capacity', {responseType: 'json', timeout: 5000, params: params})
+            await axios.get('API_BASE_URL/api/capacity', {responseType: 'json', timeout: 5000, params: params})
             .then(res => {
                 setData(res.data); 
             });
@@ -128,8 +128,6 @@ const Home = () => {
             setIsLoading(false);
         }
     }
-
-    const rootNavigationState = useRootNavigationState();
     
     useEffect(() => {
         if(studioId != null) {

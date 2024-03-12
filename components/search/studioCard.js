@@ -24,7 +24,7 @@ const sendData = (name, id) => {
         const params = new URLSearchParams();
         params.append('name', name);
         params.append('studioId', id);
-        axios.post('http://192.168.1.10:7002/api/studios', params);
+        axios.post('API_BASE_URL/api/studios', params);
     } catch (error) {
         alert(`Error sending request: ${error}`);
     } 

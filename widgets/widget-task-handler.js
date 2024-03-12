@@ -45,6 +45,7 @@ export async function widgetTaskHandler(props) {
       break;
 
     case 'WIDGET_UPDATE':
+    case 'WIDGET_RESIZED':
       capacity = await getCapacity();
       percentage = "---";
       capacity.items.forEach(item => {
@@ -54,10 +55,6 @@ export async function widgetTaskHandler(props) {
         }
       });
       props.renderWidget(<StudioInfoWidget title={await AsyncStorage.getItem('fitx-name')} capacity={String(percentage) + '%'} />);
-      break;
-
-    case 'WIDGET_RESIZED':
-      // Not needed for now
       break;
 
     case 'WIDGET_DELETED':
