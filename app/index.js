@@ -7,7 +7,6 @@ import axios from 'axios';
 import { CapacityGraphs, ChangeStudio } from "../components";
 import { COLORS, FONT, icons, images, SIZES } from '../constants';
 
-import { WidgetPreview } from 'react-native-android-widget';
 import { registerWidgetTaskHandler } from 'react-native-android-widget';
 import { widgetTaskHandler } from '../widgets/widget-task-handler';
 
@@ -15,6 +14,7 @@ import { StudioInfoWidget } from '../widgets/studioInfoWidget';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { requestWidgetUpdate } from 'react-native-android-widget';
+import { StatusBar } from 'expo-status-bar';
 
 
 const BACKGROUND_FETCH_TASK = 'fitx-background-fetch';
@@ -38,7 +38,6 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
           percentage = item.percentage;
         }
       });
-      console.log(percentage)
       requestWidgetUpdate({
         widgetName: 'studioWidget',
         renderWidget: () => <StudioInfoWidget title={name} capacity={String(percentage) + '%'} />,
@@ -110,22 +109,27 @@ const Home = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    // Pull to refresh indicator
+    const [refreshing, setRefreshing] = useState(false);
 
     // call the api for capacity values
     const fetchData = async () => {
+        setError(null);
         setIsLoading(true);
         const params = {studioId: Number(studioId)};
     
         try {
-            await axios.get('API_BASE_URL/api/capacity', {responseType: 'json', timeout: 5000, params: params})
+            await axios.get('/api/capacity', {responseType: 'json', params: params, timeout: 10000})
             .then(res => {
                 setData(res.data); 
+                setIsLoading(false);
+                setRefreshing(false);
             });
-            setIsLoading(false);
         } catch (error) {
             setError(error);
         } finally {
             setIsLoading(false);
+            setRefreshing(false);
         }
     }
     
@@ -133,18 +137,16 @@ const Home = () => {
         if(studioId != null) {
             fetchData();
         }
-    }, [studioId]);
+    }, [studioId, refreshing]);
     
     registerWidgetTaskHandler(widgetTaskHandler);
 
 
     // Pull to refresh
-    const [refreshing, setRefreshing] = useState(false);
-
-    const onRefresh = useCallback(() => {
+    const onRefresh = useCallback( async () => {
         setRefreshing(true);
-        fetchData();
-        setRefreshing(false);
+        //await fetchData();
+        //setRefreshing(false);
     }, []);
 
     if (redirectSearch) return <Redirect href={'/search'} />;
@@ -158,27 +160,22 @@ const Home = () => {
                     headerTitleStyle: { fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }
                 }}
             />
+            <StatusBar style="light" />
             <ScrollView
             refreshControl={
                 <RefreshControl progressBackgroundColor={COLORS.lightDark} refreshing={refreshing} onRefresh={onRefresh} colors={[COLORS.primaryLight, COLORS.primary]} tintColor={COLORS.primary} />
             }>
                 <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.medium, color: COLORS.white, paddingLeft: SIZES.large, paddingTop: SIZES.medium }}>Auslastung</Text>
-                {isLoading || (data.length === 0) ? (
-                    <ActivityIndicator size="large" color={COLORS.grayedOut} />
-                ) : error ? (
+                { error ? (
                     <Text style={{color: 'red'}}>{error.message}</Text>
-                    
+                ) : isLoading || refreshing || (data.length === undefined) ?  (
+                    <ActivityIndicator size="large" color={COLORS.grayedOut} />
                 ) : (
                     <CapacityGraphs data={data} />
                 )
                 }
                 
                 <ChangeStudio />
-                <WidgetPreview
-                    renderWidget={() => <StudioInfoWidget title={"fitx test"} capacity={"60%"} />}
-                    width={200}
-                    height={200}
-                />
             </ScrollView>
 
         </SafeAreaView>
