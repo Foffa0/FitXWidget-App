@@ -24,12 +24,13 @@ const customLabel = val => {
 }; 
 
 
-let averageValuesTemplate = [ {value:1, labelComponent: () => customLabel('00 Uhr'),}, {value:2}, {value:1}, {value:1}, {value:1}, {value:1}, {value:0}, {value:0}, {value:1}, {value:2}, {value:5 }, {value:4},{value:7, labelComponent: () => customLabel('06 Uhr'),}, {value:8}, {value:10}, {value:12},{value:10}, {value:11}, {value:10}, {value:15}, {value:16}, {value:12},{value:20}, {value:25}, {value:33, labelComponent: () => customLabel('12 Uhr'),}, {value:35}, {value:34}, {value:39}, {value:30}, {value:21}, {value:22}, {value:18}, {value:25}, {value:30}, {value:33 }, {value:50},{value:70, labelComponent: () => customLabel('18 Uhr'),}, {value:80}, {value:85}, {value:80},{value:77}, {value:70}, {value:65}, {value:60}, {value:40}, {value:33},{value:21}, {value:20, labelComponent: () => customLabel('00 Uhr')},]
+//let averageValuesTemplate = [ {value:1, labelComponent: () => customLabel('00 Uhr'),}, {value:2}, {value:1}, {value:1}, {value:1}, {value:1}, {value:0}, {value:0}, {value:1}, {value:2}, {value:5 }, {value:4},{value:7, labelComponent: () => customLabel('06 Uhr'),}, {value:8}, {value:10}, {value:12},{value:10}, {value:11}, {value:10}, {value:15}, {value:16}, {value:12},{value:20}, {value:25}, {value:33, labelComponent: () => customLabel('12 Uhr'),}, {value:35}, {value:34}, {value:39}, {value:30}, {value:21}, {value:22}, {value:18}, {value:25}, {value:30}, {value:33 }, {value:50},{value:70, labelComponent: () => customLabel('18 Uhr'),}, {value:80}, {value:85}, {value:80},{value:77}, {value:70}, {value:65}, {value:60}, {value:40}, {value:33},{value:21}, {value:20, labelComponent: () => customLabel('00 Uhr')},]
 
 
 const GraphSlideCard = (itemData) => {
     const [todayValues, setTodayValues] = useState([]);
     const [averageValues, setAverageValues] = useState([]);
+    const [averageValuesTemplate, setAverageValuesTemplate] = useState([ {value:1, labelComponent: () => customLabel('00 Uhr'),}, {value:2}, {value:1}, {value:1}, {value:1}, {value:1}, {value:0}, {value:0}, {value:1}, {value:2}, {value:5 }, {value:4},{value:7, labelComponent: () => customLabel('06 Uhr'),}, {value:8}, {value:10}, {value:12},{value:10}, {value:11}, {value:10}, {value:15}, {value:16}, {value:12},{value:20}, {value:25}, {value:33, labelComponent: () => customLabel('12 Uhr'),}, {value:35}, {value:34}, {value:39}, {value:30}, {value:21}, {value:22}, {value:18}, {value:25}, {value:30}, {value:33 }, {value:50},{value:70, labelComponent: () => customLabel('18 Uhr'),}, {value:80}, {value:85}, {value:80},{value:77}, {value:70}, {value:65}, {value:60}, {value:40}, {value:33},{value:21}, {value:20, labelComponent: () => customLabel('00 Uhr')},])
     const [isLoading, setIsLoading] = useState(true);
     const [pointerIndex, setPointerIndex] = useState(0);
     // Check for missing data that still needs to be collected by the api (only if a new studio has initially been added)
@@ -68,18 +69,27 @@ const GraphSlideCard = (itemData) => {
                         todayValuesTemp.push({value: itemData.itemData.data[i].capacities.slice(-1)[0]});
                     } 
                     
-                    let sum = itemData.itemData.data[i].capacities.reduce((accumulator, currentValue) => {
+                    /*let sum = itemData.itemData.data[i].capacities.reduce((accumulator, currentValue) => {
                         return accumulator + currentValue
-                    },0);
-                    averageValuesTemplate[i].value = sum / itemData.itemData.data[i].capacities.length;
+                    },0);*/
+                    let average = 0;
+                    for (let x = 0; x < itemData.itemData.data[i].capacities.length; x++) {
+                        average += itemData.itemData.data[i].capacities[x];
+                        
+                    }
+                    
+                    averageValuesTemplate[i].value = Math.floor(average / itemData.itemData.data[i].capacities.length);//sum / itemData.itemData.data[i].capacities.length;
+                    if (today.getDay() === itemData.itemData.weekday) {
+                        console.log(itemData.itemData.data[i].capacities)
+                        console.log(averageValuesTemplate[i].value)
+                        }
                 }
             }
-
             
 
             if (today.getDay() === itemData.itemData.weekday) {
                 const id = await AsyncStorage.getItem('fitx-id');
-    
+                console.log(averageValuesTemplate);
                 try {
                     await axios.get(`https://fitx-proxy.daniel-stefan.dev/api/utilization/${id}`, {responseType: 'json', timeout: 5000,})
                     .then(res => {
@@ -91,7 +101,9 @@ const GraphSlideCard = (itemData) => {
                         });
                         
                         setTodayValues(todayValuesTemp);
+                        //console.log(averageValuesTemplate);
                         setAverageValues(averageValuesTemplate);
+                        
 
                         setPointerIndex(todayValuesTemp.length - 1);
 
@@ -115,7 +127,7 @@ const GraphSlideCard = (itemData) => {
     
     // pull and initialize graph data
     useEffect(() => {
-
+        setIsLoading(true);
         fetchData();
     }, [])
 
