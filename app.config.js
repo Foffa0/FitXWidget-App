@@ -7,7 +7,7 @@ const widgetConfig = {
       minWidth: '80dp',
       minHeight: '80dp',
       description: 'FitX Studio Auslastung', // Description shown in the widget picker
-      previewImage: './assets/icon.png', // Path to widget preview image
+      previewImage: './assets/images/widget.png', // Path to widget preview image
       resizeMode: 'horizontal|vertical',
 
       // How often, in milliseconds, that this AppWidget wants to be updated.
