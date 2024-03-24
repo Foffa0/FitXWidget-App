@@ -5,7 +5,7 @@ import { View, Text, Dimensions, ActivityIndicator } from "react-native";
 import { COLORS, FONT } from "../../constants";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { requestWidgetUpdate } from 'react-native-android-widget';
 
 const { height, width } = Dimensions.get('window');
 
@@ -79,17 +79,14 @@ const GraphSlideCard = (itemData) => {
                     }
                     
                     averageValuesTemplate[i].value = Math.floor(average / itemData.itemData.data[i].capacities.length);//sum / itemData.itemData.data[i].capacities.length;
-                    if (today.getDay() === itemData.itemData.weekday) {
-                        console.log(itemData.itemData.data[i].capacities)
-                        console.log(averageValuesTemplate[i].value)
-                        }
                 }
             }
             
 
             if (today.getDay() === itemData.itemData.weekday) {
                 const id = await AsyncStorage.getItem('fitx-id');
-                console.log(averageValuesTemplate);
+                const name = await AsyncStorage.getItem('fitx-name');
+
                 try {
                     await axios.get(`https://fitx-proxy.daniel-stefan.dev/api/utilization/${id}`, {responseType: 'json', timeout: 5000,})
                     .then(res => {
@@ -106,6 +103,14 @@ const GraphSlideCard = (itemData) => {
                         
 
                         setPointerIndex(todayValuesTemp.length - 1);
+
+                        requestWidgetUpdate({
+                            widgetName: 'studioWidget',
+                            renderWidget: () => <StudioInfoWidget title={name} capacity={String(todayValuesTemp.slice(-1)[0]) + '%'} />,
+                            widgetNotFound: () => {
+                              // Called if no widget is present on the home screen
+                            }
+                        });
 
                         setIsLoading(false);
                         
