@@ -21,7 +21,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
       "package": "com.foffa.FitXWidget"
     },
@@ -33,6 +33,11 @@
       "expo-font",
         {
           "fonts": ["./assets/fonts/DMSans-Bold.ttf", "./assets/fonts/DMSans-Medium.ttf", "./assets/fonts/DMSans-Regular.ttf"]
+        },
+        "@sentry/react-native/expo",
+        {
+          "organization": "foffa",
+          "project": "fitx-widget"
         }
     ],
     "extra": {
