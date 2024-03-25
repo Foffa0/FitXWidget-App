@@ -6,6 +6,7 @@ import { COLORS, FONT } from "../../constants";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestWidgetUpdate } from 'react-native-android-widget';
+import { StudioInfoWidget } from '../../widgets/studioInfoWidget';
 
 const { height, width } = Dimensions.get('window');
 
@@ -106,7 +107,7 @@ const GraphSlideCard = (itemData) => {
 
                         requestWidgetUpdate({
                             widgetName: 'studioWidget',
-                            renderWidget: () => <StudioInfoWidget title={name} capacity={String(todayValuesTemp.slice(-1)[0]) + '%'} />,
+                            renderWidget: () => <StudioInfoWidget title={name} capacity={String(todayValuesTemp.slice(-1)[0].value) + '%'} />,
                             widgetNotFound: () => {
                               // Called if no widget is present on the home screen
                             }
