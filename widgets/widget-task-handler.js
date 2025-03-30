@@ -13,7 +13,7 @@ const getCapacity = async function() {
   const id = await AsyncStorage.getItem('fitx-id');
   let data = [];
   try {
-    await axios.get(`https://fitx-proxy.daniel-stefan.dev/api/utilization/${id}`, { responseType: 'json', timeout: 10000 })
+    await axios.get(`https://mein.fitx.de/nox/public/v1/studios/${id}/utilization`, { responseType: 'json', timeout: 10000, headers: {"x-tenant": "fitx"} })
       .then(res => {
         data = res.data;
       });
@@ -62,7 +62,15 @@ export async function widgetTaskHandler(props) {
       break;
 
     case 'WIDGET_CLICK':
-      // Not needed for now
+      capacity = await getCapacity();
+      percentage = "---";
+      capacity.items.forEach(item => {
+        if (item.isCurrent)
+        {
+          percentage = item.percentage;
+        }
+      });
+      props.renderWidget(<StudioInfoWidget title={await AsyncStorage.getItem('fitx-name')} capacity={String(percentage) + '%'} />);
       break;
 
     default:

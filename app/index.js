@@ -25,11 +25,13 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     const name = await AsyncStorage.getItem('fitx-name');
     let data = [];
     try {
-      await axios.get(`https://fitx-proxy.daniel-stefan.dev/api/utilization/${id}`, { responseType: 'json', timeout: 10000 })
+      await axios.get(`https://mein.fitx.de/nox/public/v1/studios/${id}/utilization`, { responseType: 'json', timeout: 10000, headers: {"x-tenant": "fitx"} })
         .then(res => {
           data = res.data;
         });
-    } catch (error) { }
+    } catch (error) { 
+        return BackgroundFetch.BackgroundFetchResult.Failed;
+    }
 
     percentage = "---";
     data.items.forEach(item => {
@@ -119,7 +121,7 @@ const Home = () => {
         const params = {studioId: Number(studioId)};
     
         try {
-            await axios.get('/api/capacity', {responseType: 'json', params: params, timeout: 10000})
+            await axios.get('https://fitx.schmuck.home64.de/api/capacity', {responseType: 'json', params: params, timeout: 10000})
             .then(res => {
                 setData(res.data); 
                 setIsLoading(false);

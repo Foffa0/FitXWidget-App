@@ -18,7 +18,7 @@ const Search = () => {
         setIsLoading(true);
     
         try {
-            await axios.get('https://fitx-proxy.daniel-stefan.dev/api/studios', {responseType: 'json', timeout: 5000})
+            await axios.get('https://mein.fitx.de/sponsorship/v1/public/studios/forwhitelabelportal', {responseType: 'json', timeout: 5000, headers: {"x-tenant": "fitx"}})
             .then(res => {
                 setData(res.data); 
             });
