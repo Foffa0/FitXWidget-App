@@ -7,8 +7,8 @@ import axios from "axios";
 
 import styles from '../../styles/search.js';
 
-const idKey = 'fitx-id';
 const nameKey = 'fitx-name';
+const magiclineKey = 'fitx-magicline-id';
 
 const storeData = async (key, value) => {
     try {
@@ -19,11 +19,11 @@ const storeData = async (key, value) => {
     
 };
 
-const sendData = (name, id) => {
+const sendData = (name, magiclineId) => {
     try {
         const params = new URLSearchParams();
         params.append('name', name);
-        params.append('studioId', id);
+        params.append('magiclineId', magiclineId);
         axios.post('https://fitx.schmuck.home64.de/api/studios', params);
     } catch (error) {
         alert(`Error sending request: ${error}`);
@@ -34,9 +34,9 @@ const StudioCard = (item) => {
 
     return (
         <Pressable style={styles.listItem} onPress={() => {
-            storeData(idKey, String(item.item.id));
             storeData(nameKey, item.item.name);
-            sendData(item.item.name, item.item.id);
+            storeData(magiclineKey, item.item.magiclineId);
+            sendData(item.item.name, item.item.magiclineId);
             router.navigate('/');
         }}>
             <Text style={styles.listItem_text}>{item.item.name}</Text>

@@ -21,11 +21,11 @@ const BACKGROUND_FETCH_TASK = 'fitx-background-fetch';
 
 // Define the task by providing a name and the function that should be executed
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-    const id = await AsyncStorage.getItem('fitx-id');
     const name = await AsyncStorage.getItem('fitx-name');
+    const magiclineId = await AsyncStorage.getItem('fitx-magicline-id');
     let data = [];
     try {
-      await axios.get(`https://mein.fitx.de/nox/public/v1/studios/${id}/utilization`, { responseType: 'json', timeout: 10000, headers: {"x-tenant": "fitx"} })
+      await axios.get(`https://mein.fitx.de/nox/public/v1/studios/${magiclineId}/utilization`, { responseType: 'json', timeout: 10000, headers: {"x-tenant": "fitx"} })
         .then(res => {
           data = res.data;
         });
@@ -64,7 +64,7 @@ async function registerBackgroundFetchAsync() {
 const Home = () => {
     const router = useRouter();
     const [studioName, setStudioName] = useState('');
-    const [studioId, setStudioId] = useState(null);
+    const [studioMagiclineId, setStudioMagiclineId] = useState(null);
     // Used to determine wether the user has already selected a studio (and redirect to the search page if not)
     const [redirectSearch, setRedirectSearch] = useState(false);
 
@@ -72,11 +72,11 @@ const Home = () => {
         async function getStudiofromStorage() {
             const data = await AsyncStorage.getItem('fitx-name');
             setStudioName(data);
-            const data2 = await AsyncStorage.getItem('fitx-id');
+            const data2 = await AsyncStorage.getItem('fitx-magicline-id');
             if(data2 === null) {
                 setRedirectSearch(true);
             }
-            setStudioId(data2);   
+            setStudioMagiclineId(data2);   
         }
 
         getStudiofromStorage();
@@ -118,7 +118,7 @@ const Home = () => {
     const fetchData = async () => {
         setError(null);
         setIsLoading(true);
-        const params = {studioId: Number(studioId)};
+        const params = {magiclineId: Number(studioMagiclineId)};
     
         try {
             await axios.get('https://fitx.schmuck.home64.de/api/capacity', {responseType: 'json', params: params, timeout: 10000})
@@ -136,10 +136,10 @@ const Home = () => {
     }
     
     useEffect(() => {
-        if(studioId != null) {
+        if(studioMagiclineId != null) {
             fetchData();
         }
-    }, [studioId, refreshing]);
+    }, [studioMagiclineId, refreshing]);
     
     registerWidgetTaskHandler(widgetTaskHandler);
 

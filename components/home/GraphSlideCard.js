@@ -85,11 +85,11 @@ const GraphSlideCard = (itemData) => {
             
 
             if (today.getDay() === itemData.itemData.weekday) {
-                const id = await AsyncStorage.getItem('fitx-id');
+                const magiclineId = await AsyncStorage.getItem('fitx-magicline-id');
                 const name = await AsyncStorage.getItem('fitx-name');
 
                 try {
-                    await axios.get(`https://mein.fitx.de/nox/public/v1/studios/${id}/utilization`, {responseType: 'json', timeout: 5000, headers: {"x-tenant": "fitx"}})
+                    await axios.get(`https://mein.fitx.de/nox/public/v1/studios/${magiclineId}/utilization`, {responseType: 'json', timeout: 5000, headers: {"x-tenant": "fitx"}})
                     .then(res => {
                         res.data.items.forEach(item => {
                             if (item.isCurrent)

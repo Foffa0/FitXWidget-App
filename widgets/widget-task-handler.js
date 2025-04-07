@@ -10,10 +10,10 @@ const nameToWidget = {
 };
 
 const getCapacity = async function() {
-  const id = await AsyncStorage.getItem('fitx-id');
+  const magiclineId = await AsyncStorage.getItem('fitx-magicline-id');
   let data = [];
   try {
-    await axios.get(`https://mein.fitx.de/nox/public/v1/studios/${id}/utilization`, { responseType: 'json', timeout: 10000, headers: {"x-tenant": "fitx"} })
+    await axios.get(`https://mein.fitx.de/nox/public/v1/studios/${magiclineId}/utilization`, { responseType: 'json', timeout: 10000, headers: {"x-tenant": "fitx"} })
       .then(res => {
         data = res.data;
       });
