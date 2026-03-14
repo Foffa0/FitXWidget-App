@@ -25,6 +25,7 @@ export default ({ config }) => ({
   plugins: [
     'expo-font',
     'expo-router',
+    '@sentry/react-native',
     ['react-native-android-widget', widgetConfig],
   ],
 });
