@@ -80,7 +80,7 @@ const Home = () => {
         }
 
         getStudiofromStorage();
-    });
+    }, []);
 
     // Background fetch
     const [isRegistered, setIsRegistered] = useState(false);
@@ -141,8 +141,9 @@ const Home = () => {
         }
     }, [studioMagiclineId, refreshing]);
     
-    registerWidgetTaskHandler(widgetTaskHandler);
-
+    useEffect(() => {
+        registerWidgetTaskHandler(widgetTaskHandler);
+    }, []);
 
     // Pull to refresh
     const onRefresh = useCallback( async () => {
