@@ -35,7 +35,7 @@ const StudioCard = (item) => {
     return (
         <Pressable style={styles.listItem} onPress={() => {
             storeData(nameKey, item.item.name);
-            storeData(magiclineKey, item.item.magiclineId);
+            storeData(magiclineKey, String(item.item.magiclineId));
             sendData(item.item.name, item.item.magiclineId);
             router.navigate('/');
         }}>

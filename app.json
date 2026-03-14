@@ -38,6 +38,10 @@
         {
           "organization": "foffa",
           "project": "fitx-widget"
+        },
+        "expo-dev-client",
+        {
+          "launchMode": "most-recent"
         }
     ],
     "extra": {
