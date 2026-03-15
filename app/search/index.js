@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { View, ScrollView, Text, SafeAreaView, TextInput, FlatList, ActivityIndicator } from 'react-native';
+import { View, ScrollView, Text, TextInput, FlatList, ActivityIndicator } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import axios from 'axios';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { COLORS, FONT, icons, images, SIZES } from '../../constants';
 import styles from '../../styles/search.js';

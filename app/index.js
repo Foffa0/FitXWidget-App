@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, RefreshControl, Text, SafeAreaView, ActivityIndicator, ScrollView } from 'react-native';
+import { View, RefreshControl, Text, ActivityIndicator, ScrollView } from 'react-native';
 import { Stack, useRouter, Redirect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CapacityGraphs, ChangeStudio } from "../components";
 import { COLORS, FONT, icons, images, SIZES } from '../constants';
@@ -11,11 +12,12 @@ import { registerWidgetTaskHandler } from 'react-native-android-widget';
 import { widgetTaskHandler } from '../widgets/widget-task-handler';
 
 import { StudioInfoWidget } from '../widgets/studioInfoWidget';
-import * as BackgroundFetch from 'expo-background-fetch';
+import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 import { requestWidgetUpdate } from 'react-native-android-widget';
 import { StatusBar } from 'expo-status-bar';
 
+let widgetTaskRegistered = false;
 
 const BACKGROUND_FETCH_TASK = 'fitx-background-fetch';
 
@@ -30,10 +32,10 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
           data = res.data;
         });
     } catch (error) { 
-        return BackgroundFetch.BackgroundFetchResult.Failed;
+                return BackgroundTask.BackgroundTaskResult.Failed;
     }
 
-    percentage = "---";
+        let percentage = "---";
     data.items.forEach(item => {
         if (item.isCurrent)
         {
@@ -49,14 +51,12 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
       });
 
   // Be sure to return the successful result type!
-  return BackgroundFetch.BackgroundFetchResult.NewData;
+    return BackgroundTask.BackgroundTaskResult.Success;
 });
 
 async function registerBackgroundFetchAsync() {
-    return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-      minimumInterval: 60 * 15, // 15 minutes
-      stopOnTerminate: false, // android only,
-      startOnBoot: true, // android only
+        return BackgroundTask.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+            minimumInterval: 15,
     });
 }
 
@@ -80,7 +80,7 @@ const Home = () => {
         }
 
         getStudiofromStorage();
-    });
+    }, []);
 
     // Background fetch
     const [isRegistered, setIsRegistered] = useState(false);
@@ -92,7 +92,7 @@ const Home = () => {
     }, []);
 
     const checkStatusAsync = async () => {
-        const status = await BackgroundFetch.getStatusAsync();
+        const status = await BackgroundTask.getStatusAsync();
         const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
         setStatus(status);
         setIsRegistered(isRegistered);
@@ -141,8 +141,12 @@ const Home = () => {
         }
     }, [studioMagiclineId, refreshing]);
     
-    registerWidgetTaskHandler(widgetTaskHandler);
-
+    useEffect(() => {
+        if (!widgetTaskRegistered) {
+            registerWidgetTaskHandler(widgetTaskHandler);
+            widgetTaskRegistered = true;
+        }
+    }, []);
 
     // Pull to refresh
     const onRefresh = useCallback( async () => {
