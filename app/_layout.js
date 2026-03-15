@@ -11,4 +11,4 @@ const Layout = () => {
   return <Stack />;
 };
 
-export default Sentry.wrap(Layout);
+export default Layout;
