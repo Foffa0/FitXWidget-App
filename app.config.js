@@ -22,5 +22,11 @@ const widgetConfig = {
 export default ({ config }) => ({
   ...config,
   name: 'FitXWidget',
-  plugins: [['react-native-android-widget', widgetConfig]],
+  plugins: [
+    'expo-font',
+    'expo-router',
+    '@sentry/react-native',
+    'expo-background-task',
+    ['react-native-android-widget', widgetConfig],
+  ],
 });
